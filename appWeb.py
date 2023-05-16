@@ -1,34 +1,34 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from bd_geladeiras import inserir_modelos
 
 
 class Web:
     def __init__(self):
         self.site = {
-            'site': 'https://www.magazineluiza.com.br/smart-tv/tv-e-video/s/et/elit/brand---$marca$/',
-            # 'modelo': '/html/body/div[1]/div/main/section[4]/div[2]/div/ul/li[%bbb%]/a/div[3]/h2',
-            'modelo': '/html/body/div[1]/div/main/section[4]/div[2]/div/ul/li[1]/a/div[3]/h2',
-            'precos': '/html/body/div[1]/div/main/section[4]/div[2]/div/ul/li[$ccc$]/a/div[3]/div[2]/div/p[2]',
+            'site': 'https://www.magazineluiza.com.br/busca/geladeira/?filters=brand---$marca$',
+            'modelo': '/html/body/div[1]/div/main/section[4]/div[3]/div/ul/li[$modelo$]/a/div[3]/h2',
+            'precos': '/html/body/div[1]/div/main/section[4]/div[3]/div/ul/li[$preco$]/a/div[3]/div/div/p[2]',
         }
 
         self.driver = webdriver.Chrome()
-        # self.driver.maximize_window()
         self.driver.minimize_window()
         self.getDados()
 
     def getDados(self):
 
-        marcas = ['samsung', 'lg', 'philco', 'philips', 'tcl']
-        for i in range(5):
-            print(self.site['site'].replace("$marca$", marcas[i]))
+        marcas = ['consul', 'lg', 'brastemp', 'panasonic', 'electrolux']
 
-        self.driver.get(self.site['site'])
-
-        #
-        # for x in range(2, 12):
-        #     print(self.driver.find_element(By.XPATH, self.site['modelo'].replace("%bbb%", f'{x}')).text)
-
-        for model in range(1, 11):
-            print(self.driver.find_element(By.XPATH, self.site['precos'].replace("$ccc$", f'{model}')).text)
-
-        # print(self.driver.find_element(By.XPATH, self.site['modelo']).text)
+        for marca in marcas:
+            site = self.site['site'].replace("$marca$", marca)
+            self.driver.get(site)
+            for i in range(1, 11):
+                nome = self.driver.find_element(By.XPATH, self.site['modelo'].replace("$modelo$", str(i))).text
+                preco = self.driver.find_element(By.XPATH, self.site['precos'].replace('$preco$', str(i))).text
+                print(nome)
+                preco_split = preco.split("R$")
+                preco = preco_split[1].split(" ")
+                preco[1] = "R$" + preco[1]
+                preco_final = preco[1]
+                print(preco_final)
+                inserir_modelos(marca.capitalize(), nome, preco_final)
