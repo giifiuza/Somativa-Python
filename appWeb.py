@@ -25,10 +25,11 @@ class Web:
             for i in range(1, 11):
                 nome = self.driver.find_element(By.XPATH, self.site['modelo'].replace("$modelo$", str(i))).text
                 preco = self.driver.find_element(By.XPATH, self.site['precos'].replace('$preco$', str(i))).text
-                print(nome)
+                # print(nome)
                 preco_split = preco.split("R$")
                 preco = preco_split[1].split(" ")
                 preco[1] = "R$" + preco[1]
                 preco_final = preco[1]
-                print(preco_final)
+                # print(preco_final)
                 inserir_modelos(marca.capitalize(), nome, preco_final)
+

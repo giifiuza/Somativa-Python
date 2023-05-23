@@ -8,3 +8,4 @@ conexao = mysql.connector.connect(
 )
 
 cursor = conexao.cursor()
+
