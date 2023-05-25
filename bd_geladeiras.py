@@ -24,3 +24,39 @@ def listar_tudo():
     sql = "SELECT * FROM geladeiras;"
     cursor.execute(sql)
     return cursor.fetchall()
+
+
+def listar_precoCresc():
+    sql = "SELECT * FROM geladeiras ORDER BY preco;"
+    cursor.execute(sql)
+    return cursor.fetchall()
+
+def preco_LG():
+    sql = "SELECT preco FROM geladeiras WHERE marca = 'lg'"
+    cursor.execute(sql)
+    preco = cursor.fetchall()
+    return preco
+
+def preco_Pana():
+    sql = "SELECT preco FROM geladeiras WHERE marca = 'panasonic'"
+    cursor.execute(sql)
+    preco = cursor.fetchall()
+    return preco
+
+def preco_Elec():
+    sql = "SELECT preco FROM geladeiras WHERE marca = 'electrolux'"
+    cursor.execute(sql)
+    preco = cursor.fetchall()
+    return preco
+
+def preco_Brast():
+    sql = "SELECT preco FROM geladeiras WHERE marca = 'brastemp'"
+    cursor.execute(sql)
+    preco = cursor.fetchall()
+    return preco
+
+def preco_Consu():
+    sql = "SELECT preco FROM geladeiras WHERE marca = 'consul'"
+    cursor.execute(sql)
+    preco = cursor.fetchall()
+    return preco

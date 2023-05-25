@@ -3,8 +3,9 @@ from tkinter import *
 from PIL import Image, ImageTk
 import tkinter as tk
 import tkinter.font as tkFont
-
-from bd_geladeiras import scrape, listar_tudo, select_marca
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from bd_geladeiras import scrape, listar_tudo, select_marca, listar_precoCresc, preco_LG, preco_Elec, preco_Pana, preco_Brast, preco_Consu
 from appWeb import Web
 
 janela = Tk()
@@ -16,11 +17,12 @@ class Aplicacao():
         self.tela()
         self.botoes()
         self.dropdown()
+        self.dropdown_precos()
         self.labels()
         self.frames()
         self.lista()
         self.lista_models()
-        # self.grafic()
+        self.grafic()
         janela.mainloop()
 
     def tela(self):
@@ -43,7 +45,7 @@ class Aplicacao():
         # self.frame0 = Frame(self.janela, bg="#0477de")
         # self.frame0.place(relheight=0.07, relwidth=0.94, relx=0.03, rely=0.03)
         self.frame1 = Frame(self.janela, bg="#0477de")
-        self.frame1.place(relwidth=0.950, relheight=0.3, relx=0.025, rely=0.2)
+        self.frame1.place(relwidth=0.950, relheight=0.3, relx=0.025, rely=0.25)
 
     def botoes(self):
         self.btLimpar = Button(text='Limpar', background='#FFFF00', command=self.limpar_bd)
@@ -52,12 +54,18 @@ class Aplicacao():
         self.btCarregar.place(relx=0.15, rely=0.12, relwidth=0.10, relheight=0.05)
         self.btProcurar = Button(text='Buscar', command=self.procurar)
         self.btProcurar.place(relx=0.90, rely=0.134, relwidth=0.07, relheight=0.03)
+        self.btPreco = Button(text='Procurar', command=self.ordem_preco)
+        self.btPreco.place(relx=0.90, rely=0.195, relwidth=0.07, relheight=0.03)
 
     def labels(self):
         self.escolhaMarca = Label(text="Escolha a marca", background="#0086FF", foreground='white')
         self.escolhaMarca.place(relx=0.38, rely=0.10, relwidth=0.24, relheight=0.1)
         fontReal = tkFont.Font(family="Arial", size=16, weight="bold" )
         self.escolhaMarca.configure(font=fontReal)
+        self.escolhaOrdem = Label(text="Ordem", background="#0086FF", foreground='white')
+        self.escolhaOrdem.place(relx=0.465, rely=0.18, relwidth=0.18, relheight=0.07)
+        fontReal = tkFont.Font(family="Arial", size=16, weight="bold")
+        self.escolhaOrdem.configure(font=fontReal)
     def dropdown(self):
         op = [
             "Consul",
@@ -75,20 +83,19 @@ class Aplicacao():
         fontdrop= tkFont.Font(family="Arial", size=9, weight='bold')
         self.drop.configure(font=fontdrop)
 
-
     def dropdown_precos(self):
         op = [
             "Desc.",
             "Cres.",
             "Todas"
         ]
-        self.clicked = StringVar()
-        self.clicked.set("Ordem")
-        self.drop_precos = OptionMenu(janela, self.clicked, *op)
+        self.clickedd = StringVar()
+        self.clickedd.set("Preço")
+        self.drop_precos = OptionMenu(janela, self.clickedd, *op)
         self.drop_precos.pack()
-        self.drop_precos.place(relx=0.65, rely=0.13, relwidth=0.20, relheight=0.04)
+        self.drop_precos.place(relx=0.65, rely=0.19, relwidth=0.20, relheight=0.04)
         font_drop = tkFont.Font(family="Arial", size=9, weight='bold')
-        self.drop.configure(font=font_drop)
+        self.drop_precos.configure(font=font_drop)
     def limpar_bd(self):
         scrape()
         self.lista_models()
@@ -133,6 +140,51 @@ class Aplicacao():
                 self.listaMod.insert(parent='', index=0, values=(i[1], i[2], i[3]), text=i[0])
         for i in range(len(linhas)):
             self.listaMod.insert(index=i, values=[linhas[i][1], linhas[i][2], linhas[i][3]], parent='', text=[i][0])
+
+    def ordem_preco(self):
+        pass
+    #     self.listaMod.delete(*self.listaMod.get_children())
+    #     ordem = self.clicked.get()
+    #     linhas = listar_precoCresc
+    #     if ordem == 'Todas':
+    #         for i in listar_tudo():
+    #             self.listaMod.insert(parent='', index=0, values=(i[1], i[2], i[3]), text=i[0])
+    #     elif ordem == 'Cres.':
+    #         linhas
+    #     # for i in range(len(linhas)):
+    #     #     self.listaMod.insert(index=i, values=[linhas[i][1], linhas[i][2], linhas[i][3]], parent='', text=[i][0])
+
+    def grafic(self):
+
+        self.figura = plt.Figure(figsize=(10, 5), dpi=60)
+        self.grafic = self.figura.add_subplot(111)
+        self.canva = FigureCanvasTkAgg(self.figura)
+        self.tkwid = self.canva.get_tk_widget()
+        self.tkwid.place(relx=0.1, rely=0.59)
+        self.grafic.set_ylabel('Preços')
+        self.grafic.set_xlabel('Marcas')
+        self.grafic.set_title('Comparação preços entre cada marca')
+
+        marcas = ['LG', 'Consul', 'Panasonic', 'Electrolux', 'Brastemp']
+        precolg = []
+        precocon = []
+        precopana = []
+        precoele = []
+        precobras = []
+
+        for x in preco_LG():
+            for i in x:
+                precolg.append(float(i[2:].replace(".", "").replace(",", ".")))
+
+
+        precoLG = (sum(precolg)/len(precolg))
+        print(precoLG)
+        counts = [40, 100, 30, 55, 90]
+        #
+
+
+        self.grafic.bar(marcas, counts)
+
 
 
 
